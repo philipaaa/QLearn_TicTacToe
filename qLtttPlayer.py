@@ -10,7 +10,7 @@ board = np.array([['-','-','-'],['-','-','-'],['-','-','-']])
 
 players = ['X', 'O']
 num_players = len(players)
-Q = {}
+Q = {} #states explored
 
 learning_rate = 0.001
 discount_factor = 0.9
@@ -62,6 +62,35 @@ def is_game_over(board):
         return True, 'draw'
 
     return False, None
+
+# Function to choose an action based on the Q-table
+
+#Random exploration condition in the choose_action function checks whether agent should perform a random exploration or not or if current state is not present in the Q-table
+#if random exploration is choosen,
+#a random action is chosen from the available empty cells on the board.
+# This promotes exploration and allows the agent to try out different actions and gather more information about the environment.
+
+
+#if exploitation is choosen,
+#the function selects the action with the highest Q-value from the available empty cells.
+#and do action - > update it with player symbol (X or O according to player(X or O according to current player)
+
+def choose_action(board, exploration_rate):
+
+    state = board_to_string(board)
+
+    if random.uniform(0,1) < exploration_rate or state not in Q:
+
+        #in this case we want to choose a random cell to play
+        empty_cells = np.argwhere(board == '-')
+        action = tuple(random.choice(empty_cells))
+    else:
+        #choose the action with highest Q value (argmaxQ(s,a) through all possible actions from state s)
+        q_values = Q[state]
+        empty_cells = np.argwhere(board == '-')
+        empty_q_values = [q_values[cell[0],cell[1]] for cell in empty_cells]
+        max_q_value = max(empty_q_values)
+        
 
 
 
